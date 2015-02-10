@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adminMenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <TextView
+        android:id="@+id/tvMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0sp"
+        android:background="#FFBB00"
+        android:gravity="center"
+        android:text="@string/add_pole"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/header_text_size" />
+
+    <EditText
+        android:id="@+id/etPoleQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/input_left_right_margin"
+        android:layout_marginRight="@dimen/input_left_right_margin"
+        android:layout_marginTop="@dimen/input_left_right_margin"
+        android:ems="40"
+        android:gravity="top"
+        android:hint="@string/type_here_question"
+        android:inputType="textMultiLine"
+        android:lines="4" />
+
+    <LinearLayout
+        android:id="@+id/layoutEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_left_right_margin"
+        android:layout_marginRight="@dimen/input_left_right_margin"
+        android:layout_marginTop="@dimen/input_left_right_margin"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnAddOption"
+            android:layout_width="70sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="@dimen/button_space"
+            android:background="@drawable/button_shape"
+            android:shadowColor="#A85937"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="@string/add_option"
+            android:textColor="#FFFBFA"
+            android:textSize="@dimen/small_text_size" />
+
+        <Button
+            android:id="@+id/btnAddPole"
+            android:layout_width="100sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="@dimen/button_space"
+            android:background="@drawable/button_shape"
+            android:shadowColor="#A85937"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="@string/add_pole"
+            android:textColor="#FFFBFA"
+            android:textSize="@dimen/small_text_size" />
+
+        <Button
+            android:id="@+id/btnRemoveOption"
+            android:layout_width="70sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_shape"
+            android:shadowColor="#A85937"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="@string/remove_option"
+            android:textColor="#FFFBFA"
+            android:textSize="@dimen/small_text_size" />
+    </LinearLayout>
+
+</LinearLayout>

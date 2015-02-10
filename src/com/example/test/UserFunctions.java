@@ -1,0 +1,218 @@
+package com.example.test;
+
+/**
+ * Created by aher on 7/30/2014.
+ */
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+import android.content.Context;
+import android.util.Log;
+import com.example.test.library.DatabaseHandler;
+import com.example.test.library.JSONParser;
+import com.google.android.gcm.GCMRegistrar;
+
+// static import
+import static com.example.test.CommonUtilities.displayMessage;
+
+public class UserFunctions {
+
+	private JSONParser jsonParser;
+
+	private static String loginURL = "http://10.0.2.2/Online_Polling_App/";
+	private static String registerURL = "http://10.0.2.2/Online_Polling_App/";
+
+	private static String login_tag = "login";
+	private static String register_tag = "register";
+	private static String get_all_admin_tag = "getAllAdmin";
+	private static String subscribe_user_tag = "subscribeUser";
+	private static String get_user_to_approve_tag = "getUserToApprove";
+	private static String approve_user_tag = "approveUser";
+	private static String add_pole_tag = "addPole";
+	private static String poles_by_user_tag = "getAllPoleByUser";
+
+	// constructor
+	public UserFunctions() {
+		jsonParser = new JSONParser();
+	}
+
+	/**
+	 * function make Login Request
+	 * 
+	 * @param email
+	 * @param password
+	 * */
+	public JSONObject loginUser(String email, String password) {
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", login_tag));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("password", password));
+		JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+		// return json
+		// Log.e("JSON", json.toString());
+		return json;
+	}
+
+	/**
+	 * function make Login Request
+	 * 
+	 * @param context
+	 * @param name
+	 * @param email
+	 * @param password
+	 * */
+	public JSONObject registerUser(Context context, String name, String email,
+			String password, String userType, String regId) {
+		Log.d("USER_TYPE", userType);
+		// Building Parameters
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", register_tag));
+		params.add(new BasicNameValuePair("name", name));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("password", password));
+		params.add(new BasicNameValuePair("userType", userType));
+		params.add(new BasicNameValuePair("regId", regId));
+
+		displayMessage(context, context.getString(R.string.server_registering));
+		GCMRegistrar.setRegisteredOnServer(context, true);
+		String message = context.getString(R.string.server_registered);
+		displayMessage(context, message);
+		// getting JSON Object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		return json;
+	}
+
+	/**
+	 * Function get Login status
+	 * */
+	public boolean isUserLoggedIn(Context context) {
+		DatabaseHandler db = new DatabaseHandler(context);
+		int count = db.getRowCount();
+		if (count > 0) {
+			// user logged in
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Function to logout user Reset Database
+	 * */
+	public boolean logoutUser(Context context) {
+		DatabaseHandler db = new DatabaseHandler(context);
+		db.resetTables();
+		return true;
+	}
+
+	/**
+	 * Get all admin user
+	 * 
+	 * @return jsonObject
+	 * */
+	public JSONObject getAllAdminUser(String uId) {
+		Log.d("GET_ALL_ADMIN", "Get all admin called");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", get_all_admin_tag));
+		params.add(new BasicNameValuePair("uId", uId));
+		// getting JSON Object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		// return json
+		return json;
+	}
+
+	/**
+	 * Subscribe user by subscriber
+	 * 
+	 * @param userId
+	 * @param toSubscribeUserId
+	 * @return
+	 */
+	public JSONObject subscribeUser(String userId, String toSubscribeUserId) {
+		Log.d("GET_ALL_ADMIN", "Get all admin called");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", subscribe_user_tag));
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("toSubscribeUserId",
+				toSubscribeUserId));
+		// getting JSON Object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		// return json
+		return json;
+	}
+
+	/**
+	 * Get all user s who need to approve or disapprove
+	 * 
+	 * @param uId
+	 * @return JSOnObject json
+	 */
+	public JSONObject getUsersToApprove(String uId) {
+		Log.d("GET_USER_TO_APPROVE", "Get all user to approve");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", get_user_to_approve_tag));
+		params.add(new BasicNameValuePair("uId", uId));
+		// getting JSON Object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		// return json
+		return json;
+	}
+
+	/**
+	 * Approve users
+	 * 
+	 * @param userId
+	 * @param subscriberId
+	 * @return JSOnObject json
+	 */
+	public JSONObject approveUsers(String userId, String subscriberId) {
+		Log.d("APPROVE_USERS", "Approve users called");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", approve_user_tag));
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("subscriberId", subscriberId));
+		// getting JSON Object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		// return json
+		return json;
+	}
+
+	/**
+	 * Add pole bu user id
+	 * 
+	 * @param params
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject addPole(List<NameValuePair> params, String userId) {
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("tag", add_pole_tag));
+
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		return json;
+	}
+
+	/**
+	 * Get poles of user
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject getPoleByUserId(String userId) {
+		Log.d("APPROVE_USERS", "Approve users called");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", poles_by_user_tag));
+		params.add(new BasicNameValuePair("userId", userId));
+		// getting JSON object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		return json;
+	}
+}

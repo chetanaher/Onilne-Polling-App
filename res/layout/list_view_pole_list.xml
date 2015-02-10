@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal"
+    android:padding="5dip"
+
+    >
+
+    <!--  ListRow Left sied Thumbnail image
+    <LinearLayout android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/image_bg"
+        android:layout_marginRight="5dip">
+
+        <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:src="@drawable/rihanna"/>
+
+    </LinearLayout>-->
+    
+    <TextView
+        android:id="@+id/tvPoleQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rihanna Love the way lie"
+        android:layout_marginLeft="@dimen/subscribe_button_margin_top"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="@dimen/lv_main_text_size"
+        android:textStyle="bold"/>
+
+    <!-- Artist Name
+    <TextView
+        android:id="@+id/tvUserEmailApprove"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvUsernameApprove"
+        android:textColor="#343434"
+        android:textSize="@dimen/lv_sub_text_size"
+        android:layout_marginTop="2sp"
+        android:layout_marginLeft="@dimen/subscribe_button_margin_top"
+        android:text="Just gona stand there and ..." />
+    -->
+    <!-- Rightend Duration -->
+    <TextView
+        android:id="@+id/tvCreatedAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="5:45"
+        android:textSize="@dimen/duration_text_size"
+        android:textColor="#10bcc9"
+        android:textStyle="bold"
+        android:layout_below="@+id/tvPoleQuestion"
+        android:layout_alignLeft="@+id/tvPoleQuestion"
+        android:layout_alignStart="@+id/tvPoleQuestion"
+        android:layout_marginTop="@dimen/input_left_right_margin" />
+
+    <!-- Rightend Arrow
+    <Button
+        android:id="@+id/btnApprove"
+        android:layout_marginTop="@dimen/subscribe_button_margin_top"
+        android:layout_width="@dimen/subscribe_button_height"
+        android:layout_height="@dimen/subscribe_button_width"
+        android:background="@drawable/button_curved"
+        android:layout_alignParentRight="true"
+        android:shadowColor="#A0A197"
+        android:textColor="#FFFBE6"
+        android:textSize="@dimen/subscribe_text_size"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="20"
+        android:text="@string/approve"
+        />-->
+
+</RelativeLayout>

@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userMenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <TextView
+        android:id="@+id/tvMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0sp"
+        android:background="#FFBB00"
+        android:gravity="center"
+        android:text="@string/menu"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/header_text_size" />
+
+    <Button
+        android:id="@+id/btnMenuSubscribe"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_left_right_margin"
+        android:layout_marginRight="@dimen/input_left_right_margin"
+        android:layout_marginTop="@dimen/text_box_space"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A85937"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/subscribe_user"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/text_size" />
+
+</LinearLayout>
