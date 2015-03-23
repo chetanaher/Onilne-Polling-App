@@ -15,4 +15,5 @@ public class DisplayPoleFragment extends Fragment {
 		return inflater.inflate(R.layout.fragment_display_pole, container,
 				false);
 	}
+
 }

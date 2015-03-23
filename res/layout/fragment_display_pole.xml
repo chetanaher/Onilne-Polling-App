@@ -2,12 +2,12 @@
     android:id="@+id/adminMenu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@null"
     android:orientation="vertical"
     android:weightSum="1" >
 
     <TextView
-        android:id="@+id/tvMenu"
+        android:id="@+id/tvPoleMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -16,8 +16,43 @@
         android:layout_marginTop="0sp"
         android:background="#FFBB00"
         android:gravity="center"
-        android:text="@string/menu"
+        android:text="@string/pole_details"
         android:textColor="#FFFBFA"
         android:textSize="@dimen/header_text_size" />
+
+    <TextView
+        android:id="@+id/tvPoleQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/input_left_right_margin"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/pole_question"
+        android:textColor="#000000"
+        android:textSize="@dimen/medium_text_size" />
+
+    <LinearLayout
+        android:id="@+id/layoutOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnPostResult"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_left_right_margin"
+        android:layout_marginRight="@dimen/input_left_right_margin"
+        android:layout_marginTop="@dimen/text_box_space"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A85937"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/post_pole_result"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/text_size" />
 
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.example.test.Adapters;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,13 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.test.Communicator;
 import com.example.test.R;
 import com.example.test.User;
-
-import java.util.ArrayList;
 
 /**
  * Created by aher on 8/29/2014.

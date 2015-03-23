@@ -54,13 +54,17 @@
           handle received messages.
 
           By default, it must be named .GCMIntentService, unless the
-          application uses a custom BroadcastReceiver that redefines its name.
+          application uses a custom BroadcastReceiver that redefines its name.
         -->
         <service android:name=".GCMIntentService" />
 
         <activity
             android:name=".ResponseActivity"
             android:label="@string/title_activity_response" >
+        </activity>
+        <activity
+            android:name=".PoleActivity"
+            android:label="@string/title_activity_pole" >
         </activity>
     </application>
 

@@ -1,7 +1,11 @@
 package com.example.test;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
+import com.example.test.library.AlertDialogManager;
+import com.example.test.library.ConnectionDetector;
 
 /**
  * Helper class providing methods and constants common to other classes in the
@@ -39,5 +43,27 @@ public final class CommonUtilities {
 		Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
 		intent.putExtra(EXTRA_MESSAGE, msg);
 		context.sendBroadcast(intent);
+	}
+	
+	/**
+	 * Check Internet connection available or not.
+	 * 
+	 * @return
+	 */
+	public static boolean checkInternetConnection(Context context, Activity activity) {
+		
+		ConnectionDetector cd = new ConnectionDetector(context);
+		AlertDialogManager alert = new AlertDialogManager();
+		// Check if Internet present
+		if (!cd.isConnectingToInternet()) {
+			// Internet Connection is not present
+			alert.showAlertDialog(activity,
+					"Internet Connection Error",
+					"Please connect to working Internet connection", false);
+			// stop executing code by return
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

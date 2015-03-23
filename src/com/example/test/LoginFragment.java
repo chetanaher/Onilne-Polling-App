@@ -38,7 +38,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 				false);
 		if (savedInstanceState != null) {
 			String mTagObjectId = this.getArguments().getString("edttext");
-			Log.e("mTagObjectId", mTagObjectId);
+			Log.d("mTagObjectId", mTagObjectId);
 		}
 
 		return rootView;
@@ -56,11 +56,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.e("BUTTON", "Button clicked");
 		switch (v.getId()) {
 		case R.id.btnLogin:
-			Log.e("BUTTON_LOGIN_CLICKED", "BUTTON_LOGIN_CLICKED");
+			Log.d("BUTTON_LOGIN_CLICKED", "BUTTON_LOGIN_CLICKED");
 			String email = etLoginEmail.getText().toString();
 			String password = etLoginPassword.getText().toString();
 			Log.d("LOGIN_CALLED", "Login function called");

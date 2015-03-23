@@ -2,7 +2,7 @@
     android:id="@+id/adminMenu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@null"
     android:orientation="vertical"
     android:weightSum="1" >
 
@@ -71,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="@dimen/button_space"
+            android:layout_weight="0.24"
             android:background="@drawable/button_shape"
             android:shadowColor="#A85937"
             android:shadowDx="0"

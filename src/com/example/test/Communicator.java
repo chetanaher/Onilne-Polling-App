@@ -80,4 +80,36 @@ public interface Communicator {
 	 * @return
 	 */
 	public JSONObject getPoles();
+	
+	/**
+	 * Get pole by id
+	 * 
+	 * @param poleId
+	 */
+	public JSONObject getPoleByPoleId(String poleId);
+	
+	/**
+	 * Post pole result.
+	 * 
+	 * @param poleId
+	 * @param questionId
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject postPoleResult(String poleId, String optionId);
+	
+	/**
+	 * Get pole result by pole Id.
+	 * @param poleId
+	 * @return
+	 */
+	public JSONObject getPoleResult(String poleId);
+	
+	/**
+	 * Get pole list by subscribed user id.
+	 * 
+	 * @param subscribedUserId
+	 * @return
+	 */
+	public JSONObject getPoleListBySubscribedUserId(String subscribedUserId);
 }

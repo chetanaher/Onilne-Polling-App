@@ -20,8 +20,8 @@ public class PoleDb extends SQLiteOpenHelper {
 	// pole table name
 	private static final String TABLE_POLE = "pole";
 
-	private static final String KEY_POLE_QUESTION = "pole_question";
-	private static final String KEY_ID = "pole_id";
+	public static final String KEY_POLE_QUESTION = "pole_question";
+	public static final String KEY_ID = "pole_id";
 
 	/**
 	 * Constructor for pole db
@@ -52,15 +52,15 @@ public class PoleDb extends SQLiteOpenHelper {
 	 * Add Pole to data base.
 	 * 
 	 * @param poleId
-	 * @param poleText
+	 * @param poleQuestion
 	 */
-	public void addPoleToDb(String poleId, String poleText) {
+	public void addPoleToDb(String poleId, String poleQuestion) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 		values.put(KEY_ID, Integer.valueOf(poleId)); // pole id
-		values.put(KEY_POLE_QUESTION, poleText); // pole question
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>"+values.toString());
+		values.put(KEY_POLE_QUESTION, poleQuestion); // pole question
+		Log.d("QUESTION_AND_ID", poleId + " "+ poleQuestion);
 		// Inserting Row
 		db.insert(TABLE_POLE, null, values);
 		db.close(); // Closing database connection
@@ -81,7 +81,6 @@ public class PoleDb extends SQLiteOpenHelper {
  		Cursor cursor = db.rawQuery(selectQuery, args);
 		// Move to first row
 		cursor.moveToFirst();
-		System.out.println(cursor.getCount()+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		if (cursor.getCount() > 0) {
 			pole.put(KEY_POLE_QUESTION, cursor.getString(1));
 		}
@@ -90,5 +89,64 @@ public class PoleDb extends SQLiteOpenHelper {
 		db.close();
 		// return user
 		return pole;
+	}
+	
+	/**
+	 * Get pole.
+	 * 
+	 * @return
+	 */
+	public HashMap<String, String> getPoleLastInsertedPole() {
+		HashMap<String, String> pole = new HashMap<String, String>();
+		String selectQuery = "SELECT  * FROM " + TABLE_POLE + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+ 		Cursor cursor = db.rawQuery(selectQuery, null);
+		// Move to first row
+		cursor.moveToFirst();
+		
+		if (cursor.getCount() > 0) {
+			pole.put(KEY_ID, cursor.getString(0));
+			pole.put(KEY_POLE_QUESTION, cursor.getString(1));
+			Log.d(KEY_POLE_QUESTION, cursor.getString(1));
+		} 
+
+		cursor.close();
+		db.close();
+		// return user
+		return pole;
+	}
+	
+	/**
+	 * Removes all poles if exist
+	 */
+	public void removeAllPole() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String DELETE_TABLE = "DELETE FROM " + TABLE_POLE;
+		db.execSQL(DELETE_TABLE);
+		db.close();
+	}
+	
+	/**
+	 * Returns true if pole exist
+	 * 
+	 * @return
+	 */
+	public Boolean checkPoleExists() {
+		String selectQuery = "SELECT  * FROM " + TABLE_POLE + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+ 		Cursor cursor = db.rawQuery(selectQuery, null);
+		// Move to first row
+		cursor.moveToFirst();
+		
+		if (cursor.getCount() > 0) {
+			return true;
+		} 
+
+		cursor.close();
+		db.close();
+		// return user
+		return false;
 	}
 }

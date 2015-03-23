@@ -1,5 +1,22 @@
 package com.example.test;
 
+import static com.example.test.MainActivity.KEY_CREATED_AT;
+import static com.example.test.MainActivity.KEY_OPTION;
+import static com.example.test.MainActivity.KEY_OPTION_ID;
+import static com.example.test.MainActivity.KEY_OPTION_TEXT;
+import static com.example.test.MainActivity.KEY_POLES;
+import static com.example.test.MainActivity.KEY_QUESTION;
+import static com.example.test.MainActivity.KEY_QUESTION_ID;
+import static com.example.test.MainActivity.KEY_QUESTION_TEXT;
+import static com.example.test.MainActivity.KEY_UID;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,21 +29,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.test.Adapters.PoleAdapter;
-import com.example.test.library.DatabaseHandler;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static com.example.test.MainActivity.*;
+import com.example.test.db.UserDetailPref;
 
 public class PoleListFragment extends Fragment implements View.OnClickListener {
 
@@ -43,6 +47,8 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		// String value = getArguments().getString("YourKey");
+		// System.out.println(value);
 		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_pole_list, container, false);
 	}
@@ -75,10 +81,12 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 							+ optionText);
 					options.add(new BasicNameValuePair(optionId, optionText));
 				}
-
-				DatabaseHandler db = new DatabaseHandler(getActivity());
-				HashMap<String, String> userData = db.getUserDetails();
-				String uniqueId = userData.get(KEY_UID);
+				UserDetailPref userDetailPref = new UserDetailPref(
+						getActivity());
+				String uniqueId = userDetailPref.getSharedPrefByKey(KEY_UID);
+				// DatabaseHandler db = new DatabaseHandler(getActivity());
+				// HashMap<String, String> userData = db.getUserDetails();
+				// String uniqueId = userData.get(KEY_UID);
 				Pole poleObject = new Pole(questionId, questionText, uniqueId,
 						options, createdAt);
 				poleArrayList.add(poleObject);

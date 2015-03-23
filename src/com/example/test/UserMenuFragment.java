@@ -1,6 +1,7 @@
 package com.example.test;
 
-import static com.example.test.MainActivity.FRAGMENT_SUBSCRIBE;
+import static com.example.test.MainActivity.*;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,7 @@ import android.widget.Button;
 
 public class UserMenuFragment extends Fragment implements View.OnClickListener {
 
-	Button btnUserSubscribe;
+	Button btnUserSubscribe, btnMenuPoleList;
 	Communicator comm;
 
 	@Override
@@ -29,6 +30,10 @@ public class UserMenuFragment extends Fragment implements View.OnClickListener {
 		comm = (Communicator) getActivity();
 		btnUserSubscribe = (Button) getActivity().findViewById(
 				R.id.btnMenuSubscribe);
+		
+		btnMenuPoleList = (Button) getActivity().findViewById(
+				R.id.btnMenuPoleList);
+		
 	}
 
 	@Override
@@ -36,7 +41,9 @@ public class UserMenuFragment extends Fragment implements View.OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 		comm = (Communicator) getActivity();
 		initialiseElements();
+		
 		btnUserSubscribe.setOnClickListener(this);
+		btnMenuPoleList.setOnClickListener(this);
 	}
 
 	@Override
@@ -46,6 +53,11 @@ public class UserMenuFragment extends Fragment implements View.OnClickListener {
 		case R.id.btnMenuSubscribe:
 			Log.d("APPROVE_CLICKED", "Approve menu clicked");
 			comm.changeActivity(FRAGMENT_SUBSCRIBE);
+			break;
+			
+		case R.id.btnMenuPoleList:
+			Log.d("APPROVE_CLICKED", "Approve menu clicked");
+			comm.changeActivity(FRAGMENT_POLE_LIST);
 			break;
 		}
 	}

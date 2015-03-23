@@ -12,14 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
+
 
 import static com.example.test.MainActivity.*;
 
@@ -112,9 +111,9 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 		try {
 			if (poleDataJson.getString(KEY_SUCCESS) != null) {
 				String res = poleDataJson.getString(KEY_SUCCESS);
-				if (Integer.parseInt(res) == 1) {
+				if (Integer.parseInt(res) == 1 || Integer.parseInt(res) == 3) {
 					message = "Pole Added Successfully";
-					comm.changeActivity(FRAGMENT_POLE_LIST);
+					//comm.changeActivity(FRAGMENT_POLE_LIST);
 				} else {
 					message = poleDataJson.getString(KEY_ERROR_MSG);
 				}
@@ -141,8 +140,6 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 				R.dimen.input_left_right_margin);
 		llp.setMargins(marginLeftTopRight, marginLeftTopRight,
 				marginLeftTopRight, 0);
-		// llp.setMargins(10, 10, 10, 0); // llp.setMargins(left, top, right,
-		// bottom);
 		etOption.setLayoutParams(llp);
 		etOption.setHint("Option " + Integer.toString(optionCount));
 
@@ -167,5 +164,4 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 					Toast.LENGTH_LONG).show();
 		}
 	}
-
 }

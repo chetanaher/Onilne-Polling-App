@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userMenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <TextView
+        android:id="@+id/tvMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0sp"
+        android:background="#FFBB00"
+        android:gravity="center"
+        android:text="@string/menu"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/header_text_size" />
+    <LinearLayout android:id="@+id/chart" android:orientation="horizontal"
+        android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" />
+
+</LinearLayout>

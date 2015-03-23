@@ -32,6 +32,10 @@ public class UserFunctions {
 	private static String approve_user_tag = "approveUser";
 	private static String add_pole_tag = "addPole";
 	private static String poles_by_user_tag = "getAllPoleByUser";
+	private static String poles_by_pole_id_tag = "getPoleByPoleId";
+	private static String post_pole_result_tag = "postPoleResult";
+	private static String get_pole_result_tag = "getPoleResult";
+	private static String get_pole_list_by_subscribed_user_id_tag = "getPolesBySubscribedUserId";
 
 	// constructor
 	public UserFunctions() {
@@ -52,7 +56,6 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("password", password));
 		JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
 		// return json
-		// Log.e("JSON", json.toString());
 		return json;
 	}
 
@@ -206,13 +209,75 @@ public class UserFunctions {
 	 * @return
 	 */
 	public JSONObject getPoleByUserId(String userId) {
-		Log.d("APPROVE_USERS", "Approve users called");
+		Log.d("GET_POLE_BY_USER_ID", "Get pole by user id called");
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("tag", poles_by_user_tag));
 		params.add(new BasicNameValuePair("userId", userId));
 		// getting JSON object
 		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		return json;
+	}
+
+	public JSONObject getPoleByPoleId(String poleId) {
+		Log.d("GET_POLE_BY_POLE_ID", "Get pole by pole id called" + poleId);
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", poles_by_pole_id_tag));
+		params.add(new BasicNameValuePair("poleId", poleId));
+		// getting JSON object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+
+		return json;
+	}
+
+	/**
+	 * post pole result.
+	 * 
+	 * @param poleId
+	 * @param selectedOptionId
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject postPoleResult(String poleId, String selectedOptionId,
+			String userId) {
+		Log.d("POST_POLE_RESULT", "Post pole result");
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		params.add(new BasicNameValuePair("tag", post_pole_result_tag));
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("selectedOptionId", selectedOptionId));
+		params.add(new BasicNameValuePair("poleId", poleId));
+		// getting JSON object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+
+		return json;
+	}
+
+	public JSONObject getPoleResultByPoleId(String poleId) {
+		Log.d("GET_POLE_RESULT", "Get pole result");
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", get_pole_result_tag));
+		params.add(new BasicNameValuePair("poleId", poleId));
+		// getting JSON object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+
+		return json;
+	}
+
+	public JSONObject getPoleListBySubscribedUserId(String userId) {
+		Log.d("GET_POLE_LIST_BY_SUBSCRIBED_ID",
+				"Get pole list by subscribed user id");
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag",
+				get_pole_list_by_subscribed_user_id_tag));
+		params.add(new BasicNameValuePair("subscribedUserId", userId));
+		// getting JSON object
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+
 		return json;
 	}
 }

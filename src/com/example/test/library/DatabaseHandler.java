@@ -10,19 +10,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 
 	// Database Name
 	private static final String DATABASE_NAME = "android_api";
 
 	// Login table name
 	private static final String TABLE_LOGIN = "login";
-
+	SQLiteDatabase dbSqlite = this.getWritableDatabase();
 	// Login Table Columns names
 	private static final String KEY_ID = "id";
 	private static final String KEY_NAME = "name";
@@ -60,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * */
 	public void addUser(String name, String email, String uid,
 			String created_at, String user_type) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		Log.e("USER_ID>>>>>>>>>>", uid);
 
 		ContentValues values = new ContentValues();
 		values.put(KEY_NAME, name); // Name
@@ -69,8 +70,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_CREATED_AT, created_at); // Created At
 		values.put(KEY_USER_TYPE, Integer.valueOf(user_type));
 		// Inserting Row
-		db.insert(TABLE_LOGIN, null, values);
-		db.close(); // Closing database connection
+		dbSqlite.insert(TABLE_LOGIN, null, values);
+
 	}
 
 	/**
@@ -80,8 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		HashMap<String, String> user = new HashMap<String, String>();
 		String selectQuery = "SELECT  * FROM " + TABLE_LOGIN;
 
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
+		Cursor cursor = dbSqlite.rawQuery(selectQuery, null);
 		// Move to first row
 		cursor.moveToFirst();
 		if (cursor.getCount() > 0) {
@@ -91,8 +91,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			user.put("created_at", cursor.getString(4));
 			user.put("user_type", cursor.getString(5));
 		}
+
 		cursor.close();
-		db.close();
+
 		// return user
 		return user;
 	}
@@ -102,10 +103,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * */
 	public int getRowCount() {
 		String countQuery = "SELECT  * FROM " + TABLE_LOGIN;
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.rawQuery(countQuery, null);
+
+		Cursor cursor = dbSqlite.rawQuery(countQuery, null);
 		int rowCount = cursor.getCount();
-		db.close();
+
 		cursor.close();
 
 		// return row count
@@ -118,8 +119,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void resetTables() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		// Delete All Rows
-		db.delete(TABLE_LOGIN, null, null);
+		dbSqlite.delete(TABLE_LOGIN, null, null);
 		db.close();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+		dbSqlite.close();
 	}
 
 }

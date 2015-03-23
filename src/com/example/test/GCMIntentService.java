@@ -2,16 +2,15 @@ package com.example.test;
 
 import static com.example.test.CommonUtilities.SENDER_ID;
 import static com.example.test.CommonUtilities.displayMessage;
+import static com.example.test.PoleDb.KEY_ID;
 
+import java.util.HashMap;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
-import com.example.test.R;
-import com.example.test.R.string;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -24,10 +23,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	private static final String TAG = "GCMIntentService";
 	public static final String TAG_MESSAGE = "message";
 	public static final String TAG_POLE_ID = "pole_id";
-	
+
 	public GCMIntentService() {
 		super(SENDER_ID);
-		
+
 	}
 
 	@Override
@@ -55,9 +54,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		PoleDb poleDb = new PoleDb(context);
 		String message = intent.getStringExtra(TAG_MESSAGE);
 		String poleId = intent.getStringExtra(TAG_POLE_ID);
-		Log.e("RECIEVED_POLE_ID", poleId);
-		poleDb.addPoleToDb(poleId, message);
-		poleDb.getPoleByPoleId(poleId);
+		if (Integer.parseInt(poleId) != 0) {
+			Log.d("RECIEVED_POLE_ID", poleId);
+			poleDb.removeAllPole();
+			poleDb.addPoleToDb(poleId, message);
+
+			HashMap<String, String> poleNameId = poleDb
+					.getPoleLastInsertedPole();
+			poleId = poleNameId.get(KEY_ID);
+		}
+
 		displayMessage(context, message);
 		// notifies user
 		generateNotification(context, message);
@@ -99,16 +105,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Notification notification = new Notification(icon, message, when);
 		String title = context.getString(R.string.app_name);
 		Intent notificationIntent = new Intent(context, MainActivity.class);
-		
+
 		// set intent so it does not start a new activity
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent intent = PendingIntent.getActivity(context, 0,
 				notificationIntent, 0);
-		
+
 		notification.setLatestEventInfo(context, title, message, intent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(0, notification);
 	}
-
 }

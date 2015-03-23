@@ -1,16 +1,16 @@
 package com.example.test;
 
+//Static imports
 import static com.example.test.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.example.test.CommonUtilities.EXTRA_MESSAGE;
 import static com.example.test.CommonUtilities.SENDER_ID;
+import static com.example.test.CommonUtilities.checkInternetConnection;
+import static com.example.test.db.UserDetailPref.KEY_PASSWORD;
 
-import java.util.HashMap;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,19 +20,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.example.test.library.AlertDialogManager;
-import com.example.test.library.ConnectionDetector;
-import com.example.test.library.DatabaseHandler;
+import com.example.test.db.UserDetailPref;
 import com.google.android.gcm.GCMRegistrar;
-
-//Static imports
 
 public class MainActivity extends FragmentActivity implements Communicator {
 
-	// Alert dialog manager
-	AlertDialogManager alert = new AlertDialogManager();
 	static final int FRAGMENT_REGISTER = 0;
 	static final int FRAGMENT_LOGIN = 1;
 	static final int FRAGMENT_SUBSCRIBE = 2;
@@ -41,13 +37,11 @@ public class MainActivity extends FragmentActivity implements Communicator {
 	static final int FRAGMENT_APPROVE = 5;
 	static final int FRAGMENT_POLE_LIST = 6;
 	static final int FRAGMENT_MENU_USER = 7;
-
+	static final int FRAGMENT_POLE_DISPLAY = 8;
+	static final int FRAGMENT_POLE_RESULT = 9;
+	// user types
 	static final int USER_TYPE_ADMIN = 1;
 	static final int USER_TYPE_VOTER = 0;
-
-	UserFunctions userFunction;
-	DatabaseHandler db;
-
 	// JSON Response node names
 	public static String KEY_ADMINS = "admins";
 	public static String KEY_SUCCESS = "success";
@@ -67,6 +61,17 @@ public class MainActivity extends FragmentActivity implements Communicator {
 	public static String KEY_OPTION = "option";
 	public static String KEY_QUESTION_TEXT = "question_text";
 	public static String KEY_OPTION_TEXT = "option_text";
+	public static String KEY_POLE_RESULT = "pole_result";
+	public static String KEY_POLE_TOTAL_OPTION_COUNT = "total_option_count";
+	public static String KEY_POLE_OPTION_RESULT = "option_result";
+	public static String KEY_POLE_OPTION_COUNT = "option_count";
+	public static String KEY_POLE_RESULT_PERCENTAGE = "option_result_percentage";
+
+	public int dbPoleId;
+	public String poleIdResult;
+	PoleDb poleDb;
+	UserFunctions userFunction;
+	UserDetailPref userDetailPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,36 +79,52 @@ public class MainActivity extends FragmentActivity implements Communicator {
 				DISPLAY_MESSAGE_ACTION));
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		userFunction = new UserFunctions();
-		db = new DatabaseHandler(getApplicationContext());
-		if (savedInstanceState == null) {
-			if (checkInternetConnection()) {
-				FragmentManager fragmentManager = getSupportFragmentManager();
-				FragmentTransaction fragmentTransaction = fragmentManager
-						.beginTransaction();
-				fragmentTransaction.add(R.id.fragment_container,
-						new LoginFragment(), "LOGIN");
-				fragmentTransaction.commit();
+		userDetailPref = new UserDetailPref(getApplicationContext());
+
+		if (checkInternetConnection(getApplicationContext(), MainActivity.this)) {
+			if (!checkLoginByShraredPrefs()) {
+				changeActivity(FRAGMENT_LOGIN);
 			}
-		} else {
-			Bundle extras = getIntent().getExtras();
-			Log.e("THIS_IS_RECEIVED_MAIN_ACTIVITY",
-					extras.getString("testmessagee"));
+		}
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		try {
+			unregisterReceiver(mHandleMessageReceiver);
+			GCMRegistrar.onDestroy(getApplicationContext());
+		} catch (Exception e) {
+			Log.e("UnRegister Receiver Error", "> " + e.getMessage());
+		}
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		poleDb = new PoleDb(getApplicationContext());
+		if (poleDb.checkPoleExists()) {
+			changeActivity(FRAGMENT_POLE_DISPLAY);
 		}
 	}
 
 	@Override
 	public void changeActivity(int fragmentType) {
 
-		if (checkInternetConnection()) {
-			Log.d("CHANGE_ACTIVITY", "Change activity");
+		if (checkInternetConnection(getApplicationContext(), MainActivity.this)) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
 			FragmentTransaction fragmentTransaction = fragmentManager
 					.beginTransaction();
 
 			switch (fragmentType) {
 			case FRAGMENT_LOGIN:
-				Log.e("DEPLOY_MESSAGE", "WE ARE IN TEST MESSAGE");
+				Log.d("FRAGMENT_LOGIN", "FRAGMENT_LOGIN");
+				LoginFragment loginFragment = new LoginFragment();
+				fragmentTransaction.replace(R.id.fragment_container,
+						loginFragment, "LOGIN");
 				break;
 			case FRAGMENT_REGISTER:
 				RegisterFragment registerFragment = new RegisterFragment();
@@ -140,6 +161,16 @@ public class MainActivity extends FragmentActivity implements Communicator {
 				fragmentTransaction.replace(R.id.fragment_container,
 						userMenuFragment, "USER_MENU");
 				break;
+			case FRAGMENT_POLE_DISPLAY:
+				PoleDisplayFragment poleDisplayFragment = new PoleDisplayFragment();
+				fragmentTransaction.replace(R.id.fragment_container,
+						poleDisplayFragment, "POLE_DISPLAY");
+				break;
+			case FRAGMENT_POLE_RESULT:
+				PoleResultFragment poleResultFragment = new PoleResultFragment();
+				fragmentTransaction.replace(R.id.fragment_container,
+						poleResultFragment, "POLE_RESULT");
+				break;
 			}
 
 			fragmentTransaction.commit();
@@ -154,20 +185,26 @@ public class MainActivity extends FragmentActivity implements Communicator {
 			if (json.getString(KEY_SUCCESS) != null) {
 
 				String res = json.getString(KEY_SUCCESS);
+
 				if (Integer.parseInt(res) == 1) {
+
 					// user successfully logged in
 					// Store user details in SQLite Database
+					String jsonUid = json.getString(KEY_UID);
 					JSONObject json_user = json.getJSONObject("user");
+					String jsonName = json_user.getString(KEY_NAME);
+					String jsonUserType = json_user.getString(KEY_USER_TYPE);
+					String jsonCreatedAt = json_user.getString(KEY_CREATED_AT);
 
-					// Clear all previous data in database
-					userFunction.logoutUser(getApplicationContext());
-					db.addUser(json_user.getString(KEY_NAME),
-							json_user.getString(KEY_EMAIL),
-							json.getString(KEY_UID),
-							json_user.getString(KEY_CREATED_AT),
-							json_user.getString(KEY_USER_TYPE));
+					Log.d("LOGIN_STORE_SHARED_PREF", " " + jsonName + " "
+							+ email + " " + password + " " + jsonUserType + " "
+							+ jsonUid);
+
+					userDetailPref.addUserToSharedPref(jsonName, email,
+							password, jsonUserType, jsonUid, jsonCreatedAt);
+
 					Log.d("USER_LOGEDIN_SUCCEESSFULY",
-							"User loged in successfuly");
+							"User loged in successfully");
 				} else {
 					// Error in login
 					Log.d("INVALID_USER", "Invalid User Id/Password");
@@ -178,6 +215,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 				}
 			}
 		} catch (JSONException e) {
+
 			e.printStackTrace();
 		}
 
@@ -187,12 +225,11 @@ public class MainActivity extends FragmentActivity implements Communicator {
 	@Override
 	public JSONObject register(final String name, final String email,
 			final String password, final String userType) {
+
 		Log.d("REGISTER", "REGISTER");
 		// Make sure the device has the proper dependencies.
 		GCMRegistrar.checkDevice(this);
-
 		GCMRegistrar.checkManifest(this);
-		Log.e("REGISTER1", "REGISTER1");
 
 		final String regId = GCMRegistrar.getRegistrationId(this);
 		Log.d("REG_ID", regId);
@@ -214,7 +251,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 			final Context context = this;
 
-			Log.e("MESSAGES", "name:::::" + name + "email:::::" + email
+			Log.d("MESSAGES", "name:::::" + name + "email:::::" + email
 					+ "pass::::" + password + "usertype::::" + userType
 					+ "regId::" + regId);
 			JSONObject json = userFunction.registerUser(context, name, email,
@@ -225,16 +262,21 @@ public class MainActivity extends FragmentActivity implements Communicator {
 					String res = json.getString(KEY_SUCCESS);
 					if (Integer.parseInt(res) == 1) {
 						// user successfully registred
-						// Store user details in SQLite Database
 						JSONObject json_user = json.getJSONObject("user");
 
+						String jsonName = json_user.getString(KEY_NAME);
+						String jsonEmail = json_user.getString(KEY_EMAIL);
+						String jsonUid = json.getString(KEY_UID);
+						String jsonUserType = json_user
+								.getString(KEY_USER_TYPE);
+						String jsonCreateAt = json_user
+								.getString(KEY_CREATED_AT);
+
+						userDetailPref.addUserToSharedPref(jsonName, jsonEmail,
+								password, jsonUserType, jsonUid, jsonCreateAt);
+						changeActivity(FRAGMENT_LOGIN);
 						// Clear all previous data in database
 						userFunction.logoutUser(getApplicationContext());
-						db.addUser(json_user.getString(KEY_NAME),
-								json_user.getString(KEY_EMAIL),
-								json.getString(KEY_UID),
-								json_user.getString(KEY_CREATED_AT),
-								json_user.getString(KEY_USER_TYPE));
 						// Launch Dashboard Screen
 					} else {
 						// Error in registration
@@ -259,8 +301,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject subscribe(String toSubscriberUserId) {
-		HashMap<String, String> userData = db.getUserDetails();
-		String userId = userData.get(KEY_UID);
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
 		Log.d("USER_ID", userId);
 		Log.d("TO_SUBSCRIBE_USER_ID", toSubscriberUserId);
 		JSONObject json = userFunction
@@ -294,8 +335,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject approveUsers(String subscriberId) {
-		HashMap<String, String> userData = db.getUserDetails();
-		String userId = userData.get(KEY_UID);
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
 		JSONObject json = userFunction.approveUsers(userId, subscriberId);
 		String message = "";
 		try {
@@ -318,8 +358,11 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject addPole(List<NameValuePair> AddPoleParams) {
-		HashMap<String, String> userData = db.getUserDetails();
-		String userId = userData.get(KEY_UID);
+		// userDb.open();
+		// HashMap<String, String> userData = userDb.getUserDetails();
+		// userDb.close();
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
+		// String userId = userData.get(KEY_UID);
 		JSONObject json = userFunction.addPole(AddPoleParams, userId);
 
 		return json;
@@ -327,56 +370,144 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject getPoles() {
-		HashMap<String, String> userData = db.getUserDetails();
-		String userId = userData.get(KEY_UID);
-		JSONObject json = userFunction.getPoleByUserId(userId);
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
+		String userType = userDetailPref.getSharedPrefByKey(KEY_USER_TYPE);
+		JSONObject json = null;
+		Log.d("GET_POLE_BY_USER_ID", userId);
+		if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
+			json = userFunction.getPoleByUserId(userId);
+		} else {
+			json = userFunction.getPoleListBySubscribedUserId(userId);
+		}
+
 		return json;
 	}
 
+	@Override
+	public JSONObject getPoleByPoleId(String poleId) {
+		return userFunction.getPoleByPoleId(poleId);
+	}
+
+	@Override
+	public JSONObject postPoleResult(String poleId, String optionId) {
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
+		poleIdResult = poleId;
+		Log.d("POLE_RESULT_USER_ID", userId);
+		JSONObject jsonResult = userFunction.postPoleResult(poleId, optionId,
+				userId);
+		String message = null;
+		try {
+			if (jsonResult.getString(KEY_SUCCESS) != null) {
+				String res = jsonResult.getString(KEY_SUCCESS);
+
+				if (Integer.parseInt(res) == 1) {
+					message = "Pole result posted successfully";
+					changeActivity(FRAGMENT_POLE_RESULT);
+				} else {
+					message = jsonResult.getString(KEY_ERROR_MSG);
+				}
+			}
+		} catch (NumberFormatException | JSONException e) {
+			e.printStackTrace();
+		}
+
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG)
+				.show();
+		return jsonResult;
+	}
+
 	/**
-	 * Check Internet connection available or not.
+	 * Check login by shared preferences.
 	 * 
 	 * @return
 	 */
-	protected boolean checkInternetConnection() {
-		ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
+	private boolean checkLoginByShraredPrefs() {
+		Log.d("IN_CHECK_SHARED_PREF", "IN_CHECK_SHARED_PREF");
+		String email = userDetailPref.getSharedPrefByKey(KEY_EMAIL);
+		String password = userDetailPref.getSharedPrefByKey(KEY_PASSWORD);
 
-		// Check if Internet present
-		if (!cd.isConnectingToInternet()) {
-			// Internet Connection is not present
-			alert.showAlertDialog(MainActivity.this,
-					"Internet Connection Error",
-					"Please connect to working Internet connection", false);
-			// stop executing code by return
+		if (email == null || password == null) {
 			return false;
 		} else {
-			return true;
+			JSONObject json = login(email, password);
+			String res = null;
+			try {
+				res = json.getString(KEY_SUCCESS);
+
+				if (Integer.parseInt(res) == 1) {
+					String user = json.getString(KEY_USER);
+					JSONObject userDetail = new JSONObject(user);
+					String userType = userDetail.getString(KEY_USER_TYPE);
+
+					if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
+						changeActivity(FRAGMENT_MENU_ADMIN);
+					} else {
+						changeActivity(FRAGMENT_MENU_USER);
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			if (Integer.parseInt(res) == 1) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+	}
+
+	@Override
+	public JSONObject getPoleResult(String poleId) {
+		return userFunction.getPoleResultByPoleId(poleId);
+	}
+
+	@Override
+	public JSONObject getPoleListBySubscribedUserId(String subscribedUserId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
 	 * Receiving push messages
-	 * 
 	 */
 	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.e("MESAGE_RECIEVED", "MESSAGE+RECIEVED");
+			Log.d("MESAGE_RECIEVED", "MESSAGE+RECIEVED");
 			String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-			// Log.e("MY_MESASGE",
-			// intent.getExtras().getString("testmessagee"));
 			Toast.makeText(context, newMessage, Toast.LENGTH_LONG).show();
 		}
 	};
 
 	@Override
-	protected void onDestroy() {
-		try {
-			unregisterReceiver(mHandleMessageReceiver);
-			GCMRegistrar.onDestroy(getApplicationContext());
-		} catch (Exception e) {
-			Log.e("UnRegister Receiver Error", "> " + e.getMessage());
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu items for use in the action bar
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+		case R.id.menu_logout:
+			userDetailPref.removeUserFromSharedPref();
+			changeActivity(FRAGMENT_LOGIN);
+			break;
 		}
-		super.onDestroy();
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		Log.d("BACK_PRESSED", "Back button pressed");
+		String userType = userDetailPref.getSharedPrefByKey(KEY_USER_TYPE);
+		if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
+			changeActivity(FRAGMENT_MENU_ADMIN);
+		} else {
+			changeActivity(FRAGMENT_MENU_USER);
+		}
+
 	}
 }

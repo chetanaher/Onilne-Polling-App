@@ -12,7 +12,7 @@ import com.example.test.R;
 import java.util.ArrayList;
 
 /**
- * Created by aher on 9/11/2014.
+ * Created by Aher on 9/11/2014.
  */
 public class PoleAdapter extends BaseAdapter {
 	private ArrayList<Pole> _data;
