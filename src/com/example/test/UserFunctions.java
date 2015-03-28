@@ -5,10 +5,13 @@ package com.example.test;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import com.example.test.library.DatabaseHandler;
 import com.example.test.library.JSONParser;
@@ -54,9 +57,23 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("tag", login_tag));
 		params.add(new BasicNameValuePair("email", email));
 		params.add(new BasicNameValuePair("password", password));
-		JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+		
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(loginURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// return json
-		return json;
+		return resultJson ;
 	}
 
 	/**
@@ -84,9 +101,23 @@ public class UserFunctions {
 		GCMRegistrar.setRegisteredOnServer(context, true);
 		String message = context.getString(R.string.server_registered);
 		displayMessage(context, message);
-		// getting JSON Object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-		return json;
+		
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	/**
@@ -122,10 +153,23 @@ public class UserFunctions {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("tag", get_all_admin_tag));
 		params.add(new BasicNameValuePair("uId", uId));
-		// getting JSON Object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// return json
-		return json;
+		return resultJson ;
 	}
 
 	/**
@@ -144,9 +188,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("toSubscribeUserId",
 				toSubscribeUserId));
 		// getting JSON Object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// return json
-		return json;
+		return resultJson ;
 	}
 
 	/**
@@ -162,9 +219,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("tag", get_user_to_approve_tag));
 		params.add(new BasicNameValuePair("uId", uId));
 		// getting JSON Object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// return json
-		return json;
+		return resultJson ;
 	}
 
 	/**
@@ -182,9 +252,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("userId", userId));
 		params.add(new BasicNameValuePair("subscriberId", subscriberId));
 		// getting JSON Object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// return json
-		return json;
+		return resultJson ;
 	}
 
 	/**
@@ -198,8 +281,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("userId", userId));
 		params.add(new BasicNameValuePair("tag", add_pole_tag));
 
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-		return json;
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	/**
@@ -215,8 +312,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("tag", poles_by_user_tag));
 		params.add(new BasicNameValuePair("userId", userId));
 		// getting JSON object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-		return json;
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	public JSONObject getPoleByPoleId(String poleId) {
@@ -226,9 +337,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("tag", poles_by_pole_id_tag));
 		params.add(new BasicNameValuePair("poleId", poleId));
 		// getting JSON object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-
-		return json;
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	/**
@@ -250,9 +374,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("selectedOptionId", selectedOptionId));
 		params.add(new BasicNameValuePair("poleId", poleId));
 		// getting JSON object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-
-		return json;
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	public JSONObject getPoleResultByPoleId(String poleId) {
@@ -262,9 +399,22 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("tag", get_pole_result_tag));
 		params.add(new BasicNameValuePair("poleId", poleId));
 		// getting JSON object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-
-		return json;
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
 	}
 
 	public JSONObject getPoleListBySubscribedUserId(String userId) {
@@ -276,8 +426,41 @@ public class UserFunctions {
 				get_pole_list_by_subscribed_user_id_tag));
 		params.add(new BasicNameValuePair("subscribedUserId", userId));
 		// getting JSON object
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		PostDataTask task = new PostDataTask();
+		task.setParams(params);
+		task.setUrl(registerURL);
+		
+		JSONObject resultJson = null;
+		try {
+			resultJson =  task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// return json
+		return resultJson ;
+	}
+	
+	private class PostDataTask extends AsyncTask<Void,Void, JSONObject> {
 
-		return json;
+		private String url = null;
+		private List<NameValuePair> params = null;
+		
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public void setParams(List<NameValuePair> params) {
+			this.params = params;
+		}
+
+		@Override
+		protected JSONObject doInBackground(Void... params) {
+			return jsonParser.getJSONFromUrl(this.url, this.params);
+		}
+		
 	}
 }

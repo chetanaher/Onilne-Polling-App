@@ -85,7 +85,7 @@ public class PoleDisplayFragment extends Fragment implements
 			String selectedOptionString = String.valueOf(selectedOptionInt);
 			poleResponse = comm
 					.postPoleResult(questionId, selectedOptionString);
-
+			poleDb.removeAllPole();
 			break;
 		}
 	}

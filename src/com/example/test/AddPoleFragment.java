@@ -113,7 +113,7 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 				String res = poleDataJson.getString(KEY_SUCCESS);
 				if (Integer.parseInt(res) == 1 || Integer.parseInt(res) == 3) {
 					message = "Pole Added Successfully";
-					//comm.changeActivity(FRAGMENT_POLE_LIST);
+					comm.changeActivity(FRAGMENT_POLE_LIST);
 				} else {
 					message = poleDataJson.getString(KEY_ERROR_MSG);
 				}

@@ -503,11 +503,12 @@ public class MainActivity extends FragmentActivity implements Communicator {
 	public void onBackPressed() {
 		Log.d("BACK_PRESSED", "Back button pressed");
 		String userType = userDetailPref.getSharedPrefByKey(KEY_USER_TYPE);
-		if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
-			changeActivity(FRAGMENT_MENU_ADMIN);
-		} else {
-			changeActivity(FRAGMENT_MENU_USER);
-		}
-
+		if (userType != null) {
+			if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
+				changeActivity(FRAGMENT_MENU_ADMIN);
+			} else {
+				changeActivity(FRAGMENT_MENU_USER);
+			}
+		}	
 	}
 }

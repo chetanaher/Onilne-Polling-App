@@ -9,6 +9,7 @@ import static com.example.test.MainActivity.KEY_QUESTION;
 import static com.example.test.MainActivity.KEY_QUESTION_ID;
 import static com.example.test.MainActivity.KEY_QUESTION_TEXT;
 import static com.example.test.MainActivity.KEY_UID;
+import static com.example.test.MainActivity.FRAGMENT_POLE_DISPLAY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.test.Adapters.PoleAdapter;
 import com.example.test.db.UserDetailPref;
 
-public class PoleListFragment extends Fragment implements View.OnClickListener {
+public class PoleListFragment extends Fragment {
 
 	Communicator comm;
 	ListView lvPoles;
@@ -47,9 +49,6 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// String value = getArguments().getString("YourKey");
-		// System.out.println(value);
-		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_pole_list, container, false);
 	}
 
@@ -84,9 +83,6 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 				UserDetailPref userDetailPref = new UserDetailPref(
 						getActivity());
 				String uniqueId = userDetailPref.getSharedPrefByKey(KEY_UID);
-				// DatabaseHandler db = new DatabaseHandler(getActivity());
-				// HashMap<String, String> userData = db.getUserDetails();
-				// String uniqueId = userData.get(KEY_UID);
 				Pole poleObject = new Pole(questionId, questionText, uniqueId,
 						options, createdAt);
 				poleArrayList.add(poleObject);
@@ -96,11 +92,12 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 			lvPoles = (ListView) getActivity().findViewById(R.id.lvPoleList);
 			lvPoles.setAdapter(new PoleAdapter(poleArrayList,
 					R.layout.list_view_pole_list, getActivity()));
-			lvPoles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			lvPoles.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View view, int position, long id) {
+					// TODO Auto-generated method stub
+
 					optionsSelectedList = new ArrayList<NameValuePair>();
 					Pole singlePole = poleArrayList.get(position);
 					String questionText = singlePole.getQuestion();
@@ -146,19 +143,29 @@ public class PoleListFragment extends Fragment implements View.OnClickListener {
 							dialogBox.dismiss();
 						}
 					});
+
+					return true;
+				}
+			});
+
+			lvPoles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					Log.e("SELECTEDOPTION", "position " + position);
+					optionsSelectedList = new ArrayList<NameValuePair>();
+					Pole singlePole = poleArrayList.get(position);
+					PoleDb poledb = new PoleDb(getActivity());
+					poledb.addPoleToDb(singlePole.getQuestionId(),
+							singlePole.getQuestion());
+					comm.changeActivity(FRAGMENT_POLE_DISPLAY);
 				}
 			});
 
 			super.onActivityCreated(savedInstanceState);
-
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	@Override
-	public void onClick(View v) {
-
 	}
 }
