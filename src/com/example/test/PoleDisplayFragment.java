@@ -47,9 +47,6 @@ public class PoleDisplayFragment extends Fragment implements
 	Button btnPostPoleResult;
 	JSONObject poleResponse;
 
-	
-	
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
