@@ -146,6 +146,8 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 		linearLayout.addView(etOption);
 	}
 
+	
+	
 	/**
 	 * Remove last added option
 	 * 
