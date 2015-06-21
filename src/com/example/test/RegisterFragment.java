@@ -1,9 +1,16 @@
 package com.example.test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +24,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 	CheckBox chkbxIsAdmin;
 	Communicator comm;
 	String name, email, password, userType;
+	FormValidation formValidation;
 
 	static final int REGISTER_BUTTON = R.id.btnRegister;
 	static final String ADMIN = "1";
@@ -47,13 +55,22 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 		Log.e("REGISTRATION_CLICKED", "REGISTRATION_CLICKED");
 		switch (v.getId()) {
 		case R.id.btnRegister:
+
 			userType = POLLER;
 			name = etRegisterName.getText().toString();
 			email = etRegisterEmail.getText().toString();
+			password = etRegisterPassword.getText().toString();
+			
+			if (formValidation.validateByName(etRegisterName, FormValidation.NAME) == false||
+				formValidation.validateByName(etRegisterEmail, FormValidation.EMAIL) == false ||
+				formValidation.validateByName(etRegisterPassword, FormValidation.PASSWORD) == false
+			) {
+				break;
+			}
 			if (chkbxIsAdmin.isChecked()) {
 				userType = ADMIN;
 			}
-			password = etRegisterPassword.getText().toString();
+
 			comm.register(name, email, password, userType);
 			break;
 		}
@@ -63,6 +80,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 	 * Initializes all UI elements
 	 */
 	private void initialiseElements() {
+		formValidation = new FormValidation();
 		etRegisterEmail = (EditText) getActivity().findViewById(
 				R.id.etRegisterEmail);
 		etRegisterName = (EditText) getActivity().findViewById(R.id.eTName);

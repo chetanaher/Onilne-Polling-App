@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.test.Adapters.SubscribeAdapter;
 import com.example.test.db.UserDetailPref;
@@ -60,6 +61,9 @@ public class SubscribeFragment extends Fragment {
 			}
 
 		} catch (JSONException e) {
+			Toast.makeText(getActivity(),
+					"User not exists to exists to subscribe",
+					Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
 

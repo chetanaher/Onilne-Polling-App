@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.example.test.Adapters.ApproveAdapter;
 import com.example.test.db.UserDetailPref;
 
@@ -58,6 +60,8 @@ public class ApproveFragment extends Fragment {
 			}
 
 		} catch (JSONException e) {
+			Toast.makeText(getActivity(), "User not exists to approve",
+					Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
 		lvUsersToApprove = (ListView) getActivity().findViewById(

@@ -14,6 +14,7 @@ import com.example.test.library.ConnectionDetector;
 public final class CommonUtilities {
 
 	// give your server registration url here
+	//static final String SERVER_URL = "http://10.0.2.2/gcm_server_php/register.php";
 	static final String SERVER_URL = "http://10.0.2.2/gcm_server_php/register.php";
 	static final String SEND_MESSAGE_URL = "http://10.0.2.2/gcm_server_php/send_message_to_all.php";
 	// Google project id

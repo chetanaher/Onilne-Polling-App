@@ -31,6 +31,8 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.test.Adapters.PoleAdapter;
 import com.example.test.db.UserDetailPref;
 
@@ -165,6 +167,8 @@ public class PoleListFragment extends Fragment {
 
 			super.onActivityCreated(savedInstanceState);
 		} catch (JSONException e) {
+			Toast.makeText(getActivity(), "Poles not exists",
+					Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
 	}

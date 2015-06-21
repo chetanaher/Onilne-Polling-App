@@ -119,7 +119,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void resetTables() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		// Delete All Rows
-		dbSqlite.delete(TABLE_LOGIN, null, null);
+		//dbSqlite.delete(TABLE_LOGIN, null, null);
 		db.close();
 	}
 

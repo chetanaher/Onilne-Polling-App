@@ -29,6 +29,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 	Button btnLinkToRegisterScreen, btnLogin;
 	EditText etLoginEmail, etLoginPassword;
 	Communicator comm;
+	FormValidation formValidation;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,9 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		comm = (Communicator) getActivity();
 		initialiseElements();
-
 		btnLinkToRegisterScreen.setOnClickListener(this);
 		btnLogin.setOnClickListener(this);
 	}
@@ -61,6 +60,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 			Log.d("BUTTON_LOGIN_CLICKED", "BUTTON_LOGIN_CLICKED");
 			String email = etLoginEmail.getText().toString();
 			String password = etLoginPassword.getText().toString();
+			if (formValidation.validateByName(etLoginEmail, FormValidation.EMAIL) == false) {
+				break;
+			}
+			
 			Log.d("LOGIN_CALLED", "Login function called");
 			JSONObject json = comm.login(email, password);
 
@@ -96,6 +99,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 	 * Initializes all UI elements
 	 */
 	private void initialiseElements() {
+		comm = (Communicator) getActivity();
+		formValidation = new FormValidation();
 		btnLinkToRegisterScreen = (Button) getActivity().findViewById(
 				R.id.btnLinkToRegisterScreen);
 		btnLogin = (Button) getActivity().findViewById(R.id.btnLogin);

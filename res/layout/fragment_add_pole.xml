@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@null"
     android:orientation="vertical"
-    android:weightSum="1" >
+    android:weightSum="1" 
+    >
 
     <TextView
         android:id="@+id/tvMenu"

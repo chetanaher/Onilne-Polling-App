@@ -12,7 +12,7 @@ import android.widget.Button;
 import static com.example.test.MainActivity.*;
 
 public class AdminMenuFragment extends Fragment implements View.OnClickListener {
-	Button btnApproveUserMenu, btnAddPoleMenu;
+	Button btnApproveUserMenu, btnAddPoleMenu, btnMenuPoleList;
 	Communicator comm;
 
 	@Override
@@ -29,6 +29,7 @@ public class AdminMenuFragment extends Fragment implements View.OnClickListener 
 		initialiseElements();
 		btnAddPoleMenu.setOnClickListener(this);
 		btnApproveUserMenu.setOnClickListener(this);
+		btnMenuPoleList.setOnClickListener(this);
 	}
 
 	/**
@@ -39,6 +40,8 @@ public class AdminMenuFragment extends Fragment implements View.OnClickListener 
 				R.id.btnMenuApprove);
 		btnAddPoleMenu = (Button) getActivity().findViewById(
 				R.id.btnMenuAddPole);
+		btnMenuPoleList = (Button) getActivity().findViewById(
+				R.id.btnMenuPoleList);
 	}
 
 	@Override
@@ -52,6 +55,10 @@ public class AdminMenuFragment extends Fragment implements View.OnClickListener 
 		case R.id.btnMenuAddPole:
 			Log.d("APPROVE_CLICKED", "Approve menu clicked");
 			comm.changeActivity(FRAGMENT_ADD_POLE);
+			break;
+		case R.id.btnMenuPoleList:
+			Log.d("POLE_LIST_CLICKED", "POLE_LIST_CLICKED");
+			comm.changeActivity(FRAGMENT_POLE_LIST);
 			break;
 		}
 	}

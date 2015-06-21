@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static com.example.test.MainActivity.*;
 
 @SuppressWarnings("ALL")
@@ -36,6 +35,7 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 	List<NameValuePair> AddPoleParams = new ArrayList<NameValuePair>();
 	Communicator comm;
 	JSONObject poleDataJson;
+	FormValidation formValidation;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +48,6 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initialiseElements();
-		comm = (Communicator) getActivity();
 		btnAddOption.setOnClickListener(this);
 		btnRemoveOption.setOnClickListener(this);
 		btnAddPole.setOnClickListener(this);
@@ -60,7 +59,9 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 	 * Initialize all elements.
 	 */
 	private void initialiseElements() {
+		formValidation = new FormValidation();
 		currentActivity = getActivity();
+		comm = (Communicator) currentActivity;
 		linearLayout = (LinearLayout) currentActivity
 				.findViewById(R.id.layoutEt);
 		btnAddOption = (Button) currentActivity.findViewById(R.id.btnAddOption);
@@ -92,7 +93,9 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 	private void addPole() {
 		String poleQuestion, optionText;
 		poleQuestion = etPoleQuestion.getText().toString();
-
+		if (formValidation.validateByName(etPoleQuestion, FormValidation.NAME) == false) {
+			return;
+		}
 		AddPoleParams.add((new BasicNameValuePair("optionCount", Integer
 				.toString(optionCount))));
 		AddPoleParams
@@ -100,6 +103,9 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 		for (int i = (optionBase + 1), j = 1; i <= (optionBase + optionCount); i++, j++) {
 
 			EditText etOption = (EditText) currentActivity.findViewById(i);
+			if (formValidation.validateByName(etOption, FormValidation.NAME) == false) {
+				return;
+			}
 			optionText = etOption.getText().toString();
 			Log.d("OPTION_TEXT", optionText);
 			Log.d("OTION_ID", Integer.toString(i));
@@ -111,7 +117,9 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 		try {
 			if (poleDataJson.getString(KEY_SUCCESS) != null) {
 				String res = poleDataJson.getString(KEY_SUCCESS);
-				if (Integer.parseInt(res) == 1 || Integer.parseInt(res) == 3) {
+
+				if (Integer.parseInt(res) == 2 || Integer.parseInt(res) == 1
+						|| Integer.parseInt(res) == 3) {
 					message = "Pole Added Successfully";
 					comm.changeActivity(FRAGMENT_POLE_LIST);
 				} else {
@@ -146,8 +154,6 @@ public class AddPoleFragment extends Fragment implements View.OnClickListener {
 		linearLayout.addView(etOption);
 	}
 
-	
-	
 	/**
 	 * Remove last added option
 	 * 

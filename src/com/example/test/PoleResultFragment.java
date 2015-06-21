@@ -45,11 +45,12 @@ public class PoleResultFragment extends Fragment {
 	private DefaultRenderer mRenderer = new DefaultRenderer();
 	private GraphicalView mChartView;
 	Communicator comm;
+	PoleDb poleDb;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		PoleDb poleDb = new PoleDb(getActivity());
+		poleDb = new PoleDb(getActivity());
 		HashMap<String, String> poleNameId = poleDb.getPoleLastInsertedPole();
 		String poleId = poleNameId.get(KEY_ID);
 		Log.d("POLE_RESULT_POLE_ID", poleId);
@@ -57,7 +58,7 @@ public class PoleResultFragment extends Fragment {
 		poleResultList = new ArrayList<PoleResult>();
 		JSONObject poleResult = comm.getPoleResult(poleId);
 		extractPoleResult(poleResult);
-		poleDb.removeAllPole();
+
 		String message = null;
 		try {
 			if (poleResult.getString(KEY_SUCCESS) != null) {
@@ -108,7 +109,6 @@ public class PoleResultFragment extends Fragment {
 			}
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -177,4 +177,6 @@ public class PoleResultFragment extends Fragment {
 
 		return Color.argb(alpha, red, green, blue);
 	}
+	
+	
 }

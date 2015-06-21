@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,6 @@ import android.widget.TextView;
 import static com.example.test.MainActivity.*;
 import static com.example.test.PoleDb.KEY_ID;
 
-
 public class PoleDisplayFragment extends Fragment implements
 		View.OnClickListener {
 
@@ -31,6 +31,7 @@ public class PoleDisplayFragment extends Fragment implements
 	LinearLayout linearLayout;
 	Activity currentActivity;
 	String poleId = null;
+	String poleQuestionText = null;
 	RadioGroup radioGroup;
 	PoleDb poleDb;
 	RadioButton radioButton;
@@ -63,29 +64,26 @@ public class PoleDisplayFragment extends Fragment implements
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		initialiseElements();
 		linearLayout.removeAllViews();
 		HashMap<String, String> poleNameId = poleDb.getPoleLastInsertedPole();
 		poleId = poleNameId.get(KEY_ID);
-		
+		poleQuestionText = poleNameId.get(KEY_QUESTION);
 		JSONObject poleResponse = comm.getPoleByPoleId(poleId);
 		extractPoleRespones(poleResponse);
-
 		linearLayout.addView(radioGroup);
+
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnPostResult:
-
 			int selectedOptionInt = radioGroup.getCheckedRadioButtonId();
 			String selectedOptionString = String.valueOf(selectedOptionInt);
 			poleResponse = comm
 					.postPoleResult(questionId, selectedOptionString);
-			poleDb.removeAllPole();
 			break;
 		}
 	}
@@ -98,7 +96,13 @@ public class PoleDisplayFragment extends Fragment implements
 	private void extractPoleRespones(JSONObject poleResponse) {
 		try {
 			poleData = poleResponse.getJSONArray(KEY_POLES);
-
+			String poleAreadyVoted = poleResponse
+					.getString(KEY_POLE_ALREADY_VOTED);
+			if (Integer.parseInt(poleAreadyVoted) == 1) {
+				btnPostPoleResult.setEnabled(false);
+				btnPostPoleResult.setText("Already posted pole press back for Menu");
+				btnPostPoleResult.setBackgroundColor(Color.RED);
+			}
 			for (int i = 0; i < poleData.length(); i++) {
 				JSONObject pole = null;
 				pole = poleData.getJSONObject(i);
@@ -122,7 +126,6 @@ public class PoleDisplayFragment extends Fragment implements
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -150,6 +153,7 @@ public class PoleDisplayFragment extends Fragment implements
 	 * @param optionText
 	 */
 	private void addOptions(String optionId, String optionText) {
+		Log.e("ADD_OPTION_CLICKED", "ADD_OPTION_CLICKED");
 		radioButton = new RadioButton(getActivity());
 		radioButton.setText(optionText);
 		radioButton.setId(Integer.valueOf(optionId));

@@ -52,4 +52,20 @@
         android:textColor="#FFFBFA"
         android:textSize="@dimen/text_size" />
 
+    <Button
+        android:id="@+id/btnMenuPoleList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_left_right_margin"
+        android:layout_marginRight="@dimen/input_left_right_margin"
+        android:layout_marginTop="@dimen/text_box_space"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A85937"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/pole_list"
+        android:textColor="#FFFBFA"
+        android:textSize="@dimen/text_size" />
+
 </LinearLayout>

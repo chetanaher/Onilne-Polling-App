@@ -66,6 +66,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 	public static String KEY_POLE_OPTION_RESULT = "option_result";
 	public static String KEY_POLE_OPTION_COUNT = "option_count";
 	public static String KEY_POLE_RESULT_PERCENTAGE = "option_result_percentage";
+	public static String KEY_POLE_ALREADY_VOTED = "pole_already_voted";
 
 	public int dbPoleId;
 	public String poleIdResult;
@@ -79,7 +80,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 				DISPLAY_MESSAGE_ACTION));
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		userFunction = new UserFunctions();
 		userDetailPref = new UserDetailPref(getApplicationContext());
 
@@ -96,6 +97,8 @@ public class MainActivity extends FragmentActivity implements Communicator {
 		try {
 			unregisterReceiver(mHandleMessageReceiver);
 			GCMRegistrar.onDestroy(getApplicationContext());
+			Log.d("DEBUG_TAG", "poles deleted");
+			poleDb.removeAllPole();
 		} catch (Exception e) {
 			Log.e("UnRegister Receiver Error", "> " + e.getMessage());
 		}
@@ -108,6 +111,40 @@ public class MainActivity extends FragmentActivity implements Communicator {
 		poleDb = new PoleDb(getApplicationContext());
 		if (poleDb.checkPoleExists()) {
 			changeActivity(FRAGMENT_POLE_DISPLAY);
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu items for use in the action bar
+		menu.clear();
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+		case R.id.menu_logout:
+			userDetailPref.removeUserFromSharedPref();
+			changeActivity(FRAGMENT_LOGIN);
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		Log.d("BACK_PRESSED", "Back button pressed");
+		String userType = userDetailPref.getSharedPrefByKey(KEY_USER_TYPE);
+		if (userType != null) {
+			if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
+				changeActivity(FRAGMENT_MENU_ADMIN);
+			} else {
+				changeActivity(FRAGMENT_MENU_USER);
+			}
 		}
 	}
 
@@ -358,11 +395,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject addPole(List<NameValuePair> AddPoleParams) {
-		// userDb.open();
-		// HashMap<String, String> userData = userDb.getUserDetails();
-		// userDb.close();
 		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
-		// String userId = userData.get(KEY_UID);
 		JSONObject json = userFunction.addPole(AddPoleParams, userId);
 
 		return json;
@@ -385,7 +418,8 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject getPoleByPoleId(String poleId) {
-		return userFunction.getPoleByPoleId(poleId);
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
+		return userFunction.getPoleByPoleId(poleId, userId);
 	}
 
 	@Override
@@ -458,6 +492,7 @@ public class MainActivity extends FragmentActivity implements Communicator {
 
 	@Override
 	public JSONObject getPoleResult(String poleId) {
+		String userId = userDetailPref.getSharedPrefByKey(KEY_UID);
 		return userFunction.getPoleResultByPoleId(poleId);
 	}
 
@@ -478,37 +513,4 @@ public class MainActivity extends FragmentActivity implements Communicator {
 			Toast.makeText(context, newMessage, Toast.LENGTH_LONG).show();
 		}
 	};
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu items for use in the action bar
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_activity_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		switch (id) {
-		case R.id.menu_logout:
-			userDetailPref.removeUserFromSharedPref();
-			changeActivity(FRAGMENT_LOGIN);
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onBackPressed() {
-		Log.d("BACK_PRESSED", "Back button pressed");
-		String userType = userDetailPref.getSharedPrefByKey(KEY_USER_TYPE);
-		if (userType != null) {
-			if (Integer.parseInt(userType) == USER_TYPE_ADMIN) {
-				changeActivity(FRAGMENT_MENU_ADMIN);
-			} else {
-				changeActivity(FRAGMENT_MENU_USER);
-			}
-		}	
-	}
 }

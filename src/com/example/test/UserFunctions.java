@@ -24,9 +24,11 @@ public class UserFunctions {
 
 	private JSONParser jsonParser;
 
-	private static String loginURL = "http://10.0.2.2/Online_Polling_App/";
-	private static String registerURL = "http://10.0.2.2/Online_Polling_App/";
-
+	/* web URL */
+	private static String loginURL = "http://localhost/Online_Polling_App/"; 
+	/* local host URL 
+	private static String loginURL = "http://10.0.2.2/Online_Polling_App/";*/
+	
 	private static String login_tag = "login";
 	private static String register_tag = "register";
 	private static String get_all_admin_tag = "getAllAdmin";
@@ -104,7 +106,7 @@ public class UserFunctions {
 		
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -156,7 +158,7 @@ public class UserFunctions {
 		
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -190,7 +192,7 @@ public class UserFunctions {
 		// getting JSON Object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -221,7 +223,7 @@ public class UserFunctions {
 		// getting JSON Object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -254,7 +256,7 @@ public class UserFunctions {
 		// getting JSON Object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -271,7 +273,7 @@ public class UserFunctions {
 	}
 
 	/**
-	 * Add pole bu user id
+	 * Add pole by user id
 	 * 
 	 * @param params
 	 * @param userId
@@ -283,7 +285,7 @@ public class UserFunctions {
 
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -314,7 +316,7 @@ public class UserFunctions {
 		// getting JSON object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -330,16 +332,17 @@ public class UserFunctions {
 		return resultJson ;
 	}
 
-	public JSONObject getPoleByPoleId(String poleId) {
+	public JSONObject getPoleByPoleId(String poleId, String userId) {
 		Log.d("GET_POLE_BY_POLE_ID", "Get pole by pole id called" + poleId);
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("tag", poles_by_pole_id_tag));
+		params.add(new BasicNameValuePair("userId", userId));
 		params.add(new BasicNameValuePair("poleId", poleId));
 		// getting JSON object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -376,7 +379,7 @@ public class UserFunctions {
 		// getting JSON object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -401,7 +404,7 @@ public class UserFunctions {
 		// getting JSON object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
@@ -428,7 +431,7 @@ public class UserFunctions {
 		// getting JSON object
 		PostDataTask task = new PostDataTask();
 		task.setParams(params);
-		task.setUrl(registerURL);
+		task.setUrl(loginURL);
 		
 		JSONObject resultJson = null;
 		try {
