@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.test"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    package="com.chetan.polls"
+    android:versionCode="3"
+    android:versionName="1.2" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.example.test.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.chetan.polls.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
-        android:name="com.example.test.permission.C2D_MESSAGE"
+        android:name="com.chetan.polls.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-sdk
@@ -26,7 +26,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.chetan.polls.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
              >
@@ -47,7 +47,7 @@
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.example.test" />
+                <category android:name="com.chetan.polls" />
             </intent-filter>
         </receiver>
 
@@ -56,16 +56,16 @@
           handle received messages.
 
           By default, it must be named .GCMIntentService, unless the
-          application uses a custom BroadcastReceiver that redefines its name.
+          application uses a custom BroadcastReceiver that redefines its name.
         -->
-        <service android:name=".GCMIntentService" />
+        <service android:name="com.chetan.polls.GCMIntentService" />
 
         <activity
-            android:name=".ResponseActivity"
+            android:name="com.chetan.polls.ResponseActivity"
             android:label="@string/title_activity_response" >
         </activity>
         <activity
-            android:name=".PoleActivity"
+            android:name="com.chetan.polls.PoleActivity"
             android:label="@string/title_activity_pole" >
         </activity>
     </application>
